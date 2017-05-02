@@ -98,9 +98,6 @@ with tf.Session() as sess:
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
     print("Accuracy on test set:", accuracy.eval({x: mydata.test.boards, y: mydata.test.labels}))
 
-    prediction = tf.argmax(pred, 1)
-    print("Prediction: ", prediction.eval(feed_dict={x: mydata.test.boards}))
-
     # Save the mode
     saver = tf.train.Saver()
     tf.add_to_collection('input', x)
