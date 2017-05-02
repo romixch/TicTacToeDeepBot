@@ -30,9 +30,11 @@ def play_games(boards_filename, labels_filename):
 
         if played_moves < 6:
             if ttt.isWinnerX():
-                #print("The winner is: X")
                 pickle.dump(boards[ttt.playerX], boards_file)
                 pickle.dump(labels[ttt.playerX], labels_file)
+            if ttt.isWinnerO():
+                pickle.dump(boards[ttt.playerO], boards_file)
+                pickle.dump(labels[ttt.playerO], labels_file)
 
         if game % 1000 == 0:
             print('Played ', game, 'games')
