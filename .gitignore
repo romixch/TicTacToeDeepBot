@@ -60,6 +60,7 @@ target/
 \.idea/
 
 virtenv/
-
+tf-model/checkpoint
+tf-model/model*
 *_train\.p
 *_test\.p
