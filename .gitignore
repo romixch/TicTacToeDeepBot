@@ -60,3 +60,6 @@ target/
 \.idea/
 
 virtenv/
+
+*_train\.p
+*_test\.p
