@@ -8,7 +8,7 @@ def play_games(boards_filename, labels_filename):
     boards_file = open(boards_filename, 'w')
     labels_file = open(labels_filename, 'w')
     games = 10000
-    print('Playing {0:d} games now...'.format(games))
+    print('Playing {0:d} games now:'.format(games))
     for game in range(0, games):
         ttt = t.TicTacToe()
         players = [ttt.playerX, ttt.playerO]
@@ -37,11 +37,14 @@ def play_games(boards_filename, labels_filename):
                 pickle.dump(labels[ttt.playerO], labels_file)
 
         if game % 1000 == 0:
-            print('Played ', game, 'games')
+            print('Played {0:d} games...'.format(game))
 
     boards_file.close()
     labels_file.close()
     print('Finished playing')
 
+print('Generating traning set:')
 play_games('boards_train.p', 'labels_train.p')
+
+print('Generating test set:')
 play_games('boards_test.p', 'labels_test.p')
