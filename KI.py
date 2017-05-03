@@ -27,10 +27,16 @@ class TicTacToeKI:
             board = ttt.board_for_learning(player)
             predictions = self._sess.run(self._variables, feed_dict={self._input_vars: [board]})[0]
 
+            shift_moves = random.randint(0, 2)
+            while shift_moves > 0:
+                i = numpy.argmax(predictions)
+                predictions[i] = predictions.min() - 1.0
+                shift_moves -= 1
+
             x = 0
             y = 0
             minimum = predictions.min()
-            while predictions.size > 0:
+            while True:
                 i = numpy.argmax(predictions)
                 x = i % 3
                 y = i / 3
