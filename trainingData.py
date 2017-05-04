@@ -75,3 +75,6 @@ class DataSet:
         label_batch = self._labels[self._batch_pos: self._batch_pos + batch_size]
         self._batch_pos = self._batch_pos + batch_size
         return board_batch, label_batch
+
+    def reset_batch(self):
+        self._batch_pos = 0

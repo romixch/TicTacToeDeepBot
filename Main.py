@@ -18,7 +18,7 @@ import tensorflow as tf
 
 # Parameters
 learning_rate = 0.01
-training_epochs = 1
+training_epochs = 10
 batch_size = 1000
 display_step = 1
 
@@ -74,6 +74,7 @@ with tf.Session() as sess:
     # Training cycle
     for epoch in range(training_epochs):
         avg_cost = 0.
+        mydata.train.reset_batch()
         total_batch = int(mydata.train.num_examples/batch_size)
         # Loop over all batches
         for i in range(total_batch):
