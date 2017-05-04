@@ -3,11 +3,10 @@ import random
 import pickle
 import KI
 
-def play_games(boards_filename, labels_filename):
+def play_games(boards_filename, labels_filename, games):
     ki = KI.TicTacToeKI(3 * 3 * 2, 3 * 3)
     boards_file = open(boards_filename, 'w')
     labels_file = open(labels_filename, 'w')
-    games = 10000
     print('Playing {0:d} games now:'.format(games))
     for game in range(0, games):
         ttt = t.TicTacToe()
@@ -44,7 +43,7 @@ def play_games(boards_filename, labels_filename):
     print('Finished playing')
 
 print('Generating traning set:')
-play_games('boards_train.p', 'labels_train.p')
+play_games('boards_train.p', 'labels_train.p', 10000)
 
 print('Generating test set:')
-play_games('boards_test.p', 'labels_test.p')
+play_games('boards_test.p', 'labels_test.p', 1000)
