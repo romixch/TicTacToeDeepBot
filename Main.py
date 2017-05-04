@@ -18,13 +18,13 @@ import tensorflow as tf
 
 # Parameters
 learning_rate = 0.01
-training_epochs = 5
-batch_size = 200
+training_epochs = 1
+batch_size = 1000
 display_step = 1
 
 # Network Architecture Parameters
-n_hidden_1 = mydata.number_of_features * 3 # 1st layer number of features
-n_hidden_2 = mydata.number_of_features * 3 # 2nd layer number of features
+n_hidden_1 = mydata.number_of_features * 6 # 1st layer number of features
+n_hidden_2 = mydata.number_of_features * 6 # 2nd layer number of features
 n_input = mydata.number_of_features # Input features. Count of board tales
 n_classes = mydata.number_of_output_classes # The number of possible moves
 
@@ -47,14 +47,14 @@ def multilayer_perceptron(x, weights, biases):
 
 # Store layers weight & bias
 weights = {
-    'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1])),
-    'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2])),
-    'out': tf.Variable(tf.random_normal([n_hidden_2, n_classes]))
+    'h1': tf.Variable(tf.random_normal([n_input, n_hidden_1], stddev=0.01)),
+    'h2': tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2], stddev=0.01)),
+    'out': tf.Variable(tf.random_normal([n_hidden_2, n_classes], stddev=0.01))
 }
 biases = {
-    'b1': tf.Variable(tf.random_normal([n_hidden_1])),
-    'b2': tf.Variable(tf.random_normal([n_hidden_2])),
-    'out': tf.Variable(tf.random_normal([n_classes]))
+    'b1': tf.Variable(tf.random_normal([n_hidden_1], stddev=0.01)),
+    'b2': tf.Variable(tf.random_normal([n_hidden_2], stddev=0.01)),
+    'out': tf.Variable(tf.random_normal([n_classes], stddev=0.01))
 }
 
 # Construct model
