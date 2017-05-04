@@ -1,14 +1,14 @@
 import TicTacToe as t
-import random
 import pickle
 import KI
 
-def play_games(boards_filename, labels_filename, games):
+def play_games(boards_filename, labels_filename, games_to_play):
     ki = KI.TicTacToeKI(3 * 3 * 2, 3 * 3)
     boards_file = open(boards_filename, 'w')
     labels_file = open(labels_filename, 'w')
-    print('Playing {0:d} games now:'.format(games))
-    for game in range(0, games):
+    print('Playing {0:d} games now:'.format(games_to_play))
+    collected_games = 0
+    while collected_games < games_to_play:
         ttt = t.TicTacToe()
         players = [ttt.playerX, ttt.playerO]
         playerId = 0
@@ -26,8 +26,11 @@ def play_games(boards_filename, labels_filename, games):
             ttt.setField(x, y, player)
             played_moves += 1
             playerId = (playerId + 1) % 2
+            if collected_games % 1000 == 0:
+                print(ttt.get_pretty_board)
 
         if played_moves < 6:
+            collected_games += 1
             if ttt.isWinnerX():
                 pickle.dump(boards[ttt.playerX], boards_file)
                 pickle.dump(labels[ttt.playerX], labels_file)
@@ -35,8 +38,8 @@ def play_games(boards_filename, labels_filename, games):
                 pickle.dump(boards[ttt.playerO], boards_file)
                 pickle.dump(labels[ttt.playerO], labels_file)
 
-        if game % 1000 == 0:
-            print('Played {0:d} games...'.format(game))
+            if collected_games % 1000 == 0:
+                print('Collected {0:d} games...'.format(collected_games))
 
     boards_file.close()
     labels_file.close()

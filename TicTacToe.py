@@ -93,11 +93,13 @@ class TicTacToe:
                     return False
         return True # Remie
 
-    def printOut(self):
+    @property
+    def get_pretty_board(self):
+        b = ' '.join('-' for x in range(self._w))
         for y in range(self._h):
-            s = " ".join(str(x) for x in self._board[y])
-            s = s.replace(str(self._X), 'X')
-            s = s.replace(str(self._O), 'O')
-            s = s.replace(str(self._empty), ' ')
-            pprint.pprint(s)
-
+            b += '\n'
+            b += ' '.join(str(x) for x in self._board[y])
+            b = b.replace(str(self._X), 'X')
+            b = b.replace(str(self._O), 'O')
+            b = b.replace(str(self._empty), ' ')
+        return b
