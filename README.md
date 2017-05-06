@@ -45,9 +45,10 @@ As boards are growing there will be a considerably big amount of possible states
 
 It might be advantageous to reduce the amount of states by just rotating it. Because all of this boards are actually the same:
 
-|Board | 90 °| 180 ° | 270 °|
-|------|-----|-------|------|
-|`X O` |`  X`|`   `  |`O  ` |
-|`   ` |`   `|`   `  |`   ` |
-|`   ` |`  O`|`O X`  |`X  ` |
+```
+| X  0 |        |    X |        |      |        | O    |
+|      |        |      |        |      |        |      |
+|      |        |    O |        | O  X |        | X    |
+```
+
 
