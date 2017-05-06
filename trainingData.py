@@ -31,7 +31,7 @@ class DataSet:
         self._boards = []
         self._batch_pos = 0
 
-        boards_file = open(boards_filename, 'r')
+        boards_file = open(boards_filename, 'rb')
         while True:
             try:
                 boards = pickle.load(boards_file)
@@ -45,7 +45,7 @@ class DataSet:
         boards_file.close()
 
         self._labels = []
-        labels_file = open(labels_filename, 'r')
+        labels_file = open(labels_filename, 'rb')
         while True:
             try:
                 labels = pickle.load(labels_file)
