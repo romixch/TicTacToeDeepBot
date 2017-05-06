@@ -29,7 +29,7 @@ def play_games(boards_filename, labels_filename, games_to_play):
             if collected_games % 1000 == 0:
                 print(ttt.get_pretty_board)
 
-        if played_moves < 6:
+        if played_moves < 10:
             collected_games += 1
             if ttt.isWinnerX():
                 pickle.dump(boards[ttt.playerX], boards_file)

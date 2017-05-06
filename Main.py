@@ -13,18 +13,17 @@ import trainingData
 
 mydata = trainingData.Data()
 
-
 import tensorflow as tf
 
 # Parameters
-learning_rate = 0.01
-training_epochs = 10
+learning_rate = 0.007
+training_epochs = 30
 batch_size = 1000
 display_step = 1
 
 # Network Architecture Parameters
-n_hidden_1 = mydata.number_of_features * 6 # 1st layer number of features
-n_hidden_2 = mydata.number_of_features * 6 # 2nd layer number of features
+n_hidden_1 = mydata.number_of_features * 9 # 1st layer number of features
+n_hidden_2 = mydata.number_of_features * 9 # 2nd layer number of features
 n_input = mydata.number_of_features # Input features. Count of board tales
 n_classes = mydata.number_of_output_classes # The number of possible moves
 
