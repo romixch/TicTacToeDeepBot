@@ -39,7 +39,7 @@ class TicTacToeKI:
             while True:
                 i = numpy.argmax(predictions)
                 x = i % 3
-                y = int(i / 3)
+                y = i // 3
                 if ttt.isFieldAvailable(x, y):
                     break
                 predictions[i] = minimum - 1.0
