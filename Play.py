@@ -3,7 +3,7 @@ import pickle
 import KI
 
 def play_games(boards_filename, labels_filename, games_to_play):
-    ki = KI.TicTacToeKI(3 * 3 * 2, 3 * 3)
+    ki = KI.TicTacToeKI(3 * 3 * 2, 3 * 3, randomness=2)
     boards_file = open(boards_filename, 'wb')
     labels_file = open(labels_filename, 'wb')
     print('Playing {0:d} games now:'.format(games_to_play))

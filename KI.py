@@ -6,8 +6,9 @@ import numpy
 
 class TicTacToeKI:
 
-    def __init__(self, number_of_features, number_of_outputs):
+    def __init__(self, number_of_features, number_of_outputs, randomness=0):
         self._sess = tf.Session()
+        self._randomness = randomness
         try:
             new_saver = tf.train.import_meta_graph('tf-model/model.meta')
             new_saver.restore(self._sess, 'tf-model/model')
@@ -27,7 +28,7 @@ class TicTacToeKI:
             board = ttt.board_for_learning(player)
             predictions = self._sess.run(self._variables, feed_dict={self._input_vars: [board]})[0]
 
-            shift_moves = random.randint(0, 2)
+            shift_moves = random.randint(0, self._randomness)
             while shift_moves > 0:
                 i = numpy.argmax(predictions)
                 predictions[i] = predictions.min() - 1.0
