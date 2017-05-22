@@ -7,7 +7,7 @@ class TicTacToe:
         self._X = 1
         self._O = 2
         self._w, self._h = 3, 3
-        self._board = [[self._empty for x in range(self._w)] for y in range(self._h)]
+        self._board = [[self._empty for y in range(self._h)] for x in range(self._w)]
 
     @property
     def playerX(self):
@@ -30,9 +30,10 @@ class TicTacToe:
             offset = self._w * self._h
         else:
             offset = 0
+
         for x in range(self._w):
             for y in range(self._h):
-                data[offset + x * self._w + y] = 1 if self._board[x][y] == self._X else 0
+                data[offset + x * self._w + y] = 1 if self._board[y][x] == self._X else 0
 
         if player == self._X:
             offset = self._w * self._h
@@ -40,7 +41,7 @@ class TicTacToe:
             offset = 0
         for x in range(self._w):
             for y in range(self._h):
-                data[offset + x * self._w + y] = 1 if self._board[x][y] == self._O else 0
+                data[offset + y * self._h + x] = 1 if self._board[y][x] == self._O else 0
 
         return data
 
@@ -51,28 +52,33 @@ class TicTacToe:
         self.setField(x, y, self._O)
 
     def isFieldAvailable(self, x, y):
-        return self._board[x][y] == self._empty
+        return self._board[y][x] == self._empty
 
     def setField(self, x, y, player):
-        value = self._board[x][y]
+        value = self._board[y][x]
         if value == 0:
-            self._board[x][y] = player
+            self._board[y][x] = player
 
     def isWinner(self, player):
         horizontally = [player for x in range(self._w)]
         vertically = [player for y in range(self._h)]
-        for y in range(self._h):
-            row = self._board[y]
+
+        for x in range(self._w):
+            row = self._board[x]
             if row == horizontally:
                 return player
-        col = [self._empty for y in range(self._h)]
-        for y in range(self._h):
-            for x in range(self._w):
-                col[x] = self._board[x][y]
-            if col == vertically:
+
+        # Rearrange board to get a column in an array
+        row = [self._empty for y in range(self._w)]
+        for x in range(self._w):
+            for y in range(self._h):
+                row[y] = self._board[y][x]
+            if row == vertically:
                 return player
+
         if self._board[0][0] == player and self._board[1][1] == player and self._board[2][2] == player:
             return player
+
         if self._board[0][2] == player and self._board[1][1] == player and self._board[2][0] == player:
             return player
 
@@ -91,14 +97,15 @@ class TicTacToe:
             for col in range(self._w):
                 if self._board[row][col] == self._empty:
                     return False
-        return True # Remie
+        return True # Tie
 
     @property
     def get_pretty_board(self):
         b = ' '.join('-' for x in range(self._w))
-        for y in range(self._h):
+        for y in range(self._w):
             b += '\n'
-            b += ' '.join(str(x) for x in self._board[y])
+            for x in range(self._w):
+                b += str(self._board[y][x])
             b = b.replace(str(self._X), 'X')
             b = b.replace(str(self._O), 'O')
             b = b.replace(str(self._empty), ' ')
