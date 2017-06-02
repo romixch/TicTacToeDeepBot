@@ -14,6 +14,7 @@ import trainingData
 mydata = trainingData.Data()
 
 import tensorflow as tf
+import numpy
 
 # Parameters
 learning_rate = 0.007
@@ -22,9 +23,9 @@ batch_size = 1000
 display_step = 1
 
 # Network Architecture Parameters
-n_hidden_1 = mydata.number_of_features * 9 # 1st layer number of features
-n_hidden_2 = mydata.number_of_features * 9 # 2nd layer number of features
 n_input = mydata.number_of_features # Input features. Count of board tales
+n_hidden_1 = mydata.number_of_features  # 1st layer number of features
+n_hidden_2 = mydata.number_of_features  # 2nd layer number of features
 n_classes = mydata.number_of_output_classes # The number of possible moves
 
 # tf Graph input
@@ -60,7 +61,8 @@ biases = {
 pred = multilayer_perceptron(x, weights, biases)
 
 # Define loss and optimizer
-cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
+#cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
+cost = tf.reduce_mean(tf.squared_difference(pred, y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
 # Initializing the variables
@@ -81,6 +83,15 @@ with tf.Session() as sess:
             # Run optimization op (backprop) and cost op (to get loss value)
             _, c = sess.run([optimizer, cost], feed_dict={x: batch_x,
                                                           y: batch_y})
+
+            # X X
+            #   XO
+            #  O X
+            # O  O
+            board = [ord(value) for value in 'X X   XO O XO  O']
+
+            predictions = sess.run(pred, feed_dict={x: [board]})[0]
+
             # Compute average loss
             avg_cost += c / total_batch
         # Display logs per epoch step

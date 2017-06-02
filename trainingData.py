@@ -6,8 +6,8 @@ import pickle
 
 class Data():
     def __init__(self):
-        self._train = DataSet('boards_train.p', 'labels_train.p')
-        self._test = DataSet('boards_test.p', 'labels_test.p')
+        self._train = DataSet('training.csv', 16, 16)
+        self._test = DataSet('test.csv', 16, 16)
 
     @property
     def train(self):
@@ -27,36 +27,33 @@ class Data():
 
 
 class DataSet:
-    def __init__(self, boards_filename, labels_filename):
-        self._boards = []
+    def __init__(self, file_name, state_length,  number_of_labels):
+        self._boards = numpy.full(state_length, 32.0)
+        self._labels = numpy.full(number_of_labels, 0.5)
         self._batch_pos = 0
 
-        boards_file = open(boards_filename, 'rb')
-        while True:
-            try:
-                boards = pickle.load(boards_file)
-                for b in boards:
-                    if numpy.size(self._boards) == 0:
-                        self._boards = b
-                    else:
-                        self._boards = numpy.vstack([self._boards, b])
-            except EOFError:
-                break
-        boards_file.close()
+        with open(file_name, 'r') as file:
+            file.readline()
 
-        self._labels = []
-        labels_file = open(labels_filename, 'rb')
-        while True:
-            try:
-                labels = pickle.load(labels_file)
-                for l in labels:
-                    if numpy.size(self._labels) == 0:
-                        self._labels = l
-                    else:
-                        self._labels = numpy.vstack([self._labels, l])
-            except EOFError:
-                break
-        labels_file.close()
+            lines = file.read().split("\n")
+
+            for line in lines:
+                values = line.replace('"', '').split(';')
+                state = [ord(value) for value in values[0]]
+                winner = values[4]
+                reward = 1.0 if winner == 'X' else -1.0
+                discounted_reward = reward * self.Y ** int(values[3])
+                field = int(values[2])
+                labels = numpy.full(number_of_labels, 0.0)
+                labels[field] = discounted_reward
+
+                self._boards = numpy.vstack([self._boards, state])
+                self._labels = numpy.vstack([self._labels, labels])
+
+
+    @property
+    def Y(self):
+        return 0.6
 
     @property
     def num_examples(self):
