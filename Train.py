@@ -7,8 +7,6 @@ Original Author: Aymeric Damien
 Original Project: https://github.com/aymericdamien/TensorFlow-Examples/
 '''
 
-from __future__ import print_function
-
 import trainingData
 
 mydata = trainingData.Data()
@@ -36,13 +34,19 @@ y = tf.placeholder("float", [None, n_classes])
 # Create model
 def multilayer_perceptron(x, weights, biases):
     # Hidden layer with RELU activation
-    layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
-    layer_1 = tf.nn.relu(layer_1)
+    with tf.name_scope('fully_connected_1'):
+        layer_1 = tf.add(tf.matmul(x, weights['h1']), biases['b1'])
+        layer_1 = tf.nn.relu(layer_1)
+
     # Hidden layer with RELU activation
-    layer_2 = tf.add(tf.matmul(layer_1, weights['h2']), biases['b2'])
-    layer_2 = tf.nn.relu(layer_2)
+    with tf.name_scope('fully_connected_2'):
+        layer_2 = tf.add(tf.matmul(layer_1, weights['h2']), biases['b2'])
+        layer_2 = tf.nn.relu(layer_2)
+
     # Output layer with linear activation
-    out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
+    with tf.name_scope('output'):
+        out_layer = tf.matmul(layer_2, weights['out']) + biases['out']
+
     return out_layer
 
 # Store layers weight & bias
@@ -61,7 +65,6 @@ biases = {
 pred = multilayer_perceptron(x, weights, biases)
 
 # Define loss and optimizer
-#cost = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=pred, labels=y))
 cost = tf.reduce_mean(tf.squared_difference(pred, y))
 optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
 
@@ -109,7 +112,7 @@ with tf.Session() as sess:
     accuracy = tf.reduce_mean(tf.cast(correct_prediction, "float"))
     print("Accuracy on test set:", accuracy.eval({x: mydata.test.boards, y: mydata.test.labels}))
 
-    # Save the mode
+    # Save the model
     saver = tf.train.Saver()
     tf.add_to_collection('input', x)
     tf.add_to_collection('pred', pred)

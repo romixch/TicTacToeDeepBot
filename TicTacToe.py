@@ -1,13 +1,25 @@
-import pprint
+import numpy
 
 
 class TicTacToe:
     def __init__(self):
-        self._empty = 0
-        self._X = 1
-        self._O = 2
+        self._empty = 0.0
+        self._X = 1.0
+        self._O = 2.0
         self._w, self._h = 3, 3
         self._board = [[self._empty for y in range(self._h)] for x in range(self._w)]
+
+    @property
+    def board_field_size(self):
+        return numpy.size(self._board)
+
+    @property
+    def board_width(self):
+        return self._w
+
+    @property
+    def board_height(self):
+        return self._h
 
     @property
     def playerX(self):
@@ -21,29 +33,14 @@ class TicTacToe:
     def empty(self):
         return self._empty
 
-    def board_for_learning(self, player):
-        data = [self._empty for i in range(self._w * self._h * 2)]
+    def board_for_learning(self):
+        board = numpy.full((self._h * self._w), 0.0)
+        for y in range(self._w):
+            for x in range(self._h):
+                mark = self._board[y][x]
+                board[y * self._h + x] = mark
+        return board
 
-        offset = 0 # Handles if the board should be represented in the eyes of X or O.
-
-        if player == self._O:
-            offset = self._w * self._h
-        else:
-            offset = 0
-
-        for x in range(self._w):
-            for y in range(self._h):
-                data[offset + x * self._w + y] = 1 if self._board[y][x] == self._X else 0
-
-        if player == self._X:
-            offset = self._w * self._h
-        else:
-            offset = 0
-        for x in range(self._w):
-            for y in range(self._h):
-                data[offset + y * self._h + x] = 1 if self._board[y][x] == self._O else 0
-
-        return data
 
     def playX(self, x, y):
         self.setField(x, y, self._X)
@@ -101,7 +98,7 @@ class TicTacToe:
 
     @property
     def get_pretty_board(self):
-        b = ' '.join('-' for x in range(self._w))
+        b = ''.join('-' for x in range(self._w))
         for y in range(self._w):
             b += '\n'
             for x in range(self._w):
@@ -109,4 +106,5 @@ class TicTacToe:
             b = b.replace(str(self._X), 'X')
             b = b.replace(str(self._O), 'O')
             b = b.replace(str(self._empty), ' ')
+            b += '|'
         return b

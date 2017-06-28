@@ -1,29 +1,36 @@
-import KI
-import TicTacToe as t
+import KIPlayer
+import TicTacToe as ttt
+import model_helper
+import tensorflow as tf
 
-ki = KI.TicTacToeKI(3 * 3 * 2, 3 * 3)
-ttt = t.TicTacToe()
 
-while not ttt.isFinished():
-    x, y = ki.play_move(ttt, ttt.playerX)
-    ttt.setField(x, y, ttt.playerX)
-    print(ttt.get_pretty_board)
+continue_playing = True
 
-    if (ttt.isFinished()):
-        if ttt.isWinnerX():
-            print('You have lost!')
-        else:
-            print('You played a draw.')
-        break
+with tf.Session() as sess:
+    x_tensor, pred_tensor = model_helper.load_model(sess, 'tf-model/X')
+    while continue_playing:
+        game = ttt.TicTacToe()
+        while not game.isFinished():
+            x, y = KIPlayer.next_move(game, sess, pred_tensor, x_tensor)
+            game.setField(x, y, game.playerX)
+            print(game.get_pretty_board)
 
-    while not ttt.isFieldAvailable(x, y):
-        x = int(input('x: '))
-        y = int(input('y: '))
-    ttt.setField(x, y, ttt.playerO)
+            if (game.isFinished()):
+                if game.isWinnerX():
+                    print('You have lost!')
+                else:
+                    print('You played a draw.')
+                break
 
-    if (ttt.isFinished()):
-        if ttt.isWinnerO():
-            print('You won!!!')
-        else:
-            print('You played a draw.')
-        break
+            while not game.isFieldAvailable(x, y):
+                x = int(input('x: '))
+                y = int(input('y: '))
+            game.setField(x, y, game.playerO)
+
+            if game.isFinished():
+                if game.isWinnerO():
+                    print('You won!!!')
+                else:
+                    print('You played a draw.')
+                break
+        continue_playing = input('Start over? (y / n)') == 'y'
