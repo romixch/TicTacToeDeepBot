@@ -1,12 +1,10 @@
 import tensorflow as tf
 
-def build_model(board_field_size):
+def build_model(board_field_size, hidden_layers):
 
     # Network Architecture Parameters
     n_input = board_field_size  # Input features. Count of board tales
-    n_hidden_1 = board_field_size * 10  # 1st layer number of features
-    n_hidden_2 = board_field_size * 10  # 2nd layer number of features
-    n_hidden_3 = board_field_size * 10  # 3rd layer number of features
+    n_hidden = board_field_size * 10  # hidden layer number of features
     n_classes = board_field_size  # The number of possible moves
 
     # tf Graph input
@@ -19,30 +17,32 @@ def build_model(board_field_size):
     # Create model
     # Hidden layer with RELU activation
     with tf.name_scope('fully_connected_1'):
-        weight_1 = tf.Variable(tf.random_normal([n_input, n_hidden_1], stddev=0.01), name='weight')
-        baias_1 = tf.Variable(tf.random_normal([n_hidden_1], stddev=0.01), name='baias')
+        weight_1 = tf.Variable(tf.random_normal([n_input, n_hidden], stddev=0.01), name='weight')
+        baias_1 = tf.Variable(tf.random_normal([n_hidden], stddev=0.01), name='baias')
         layer_1 = tf.add(tf.matmul(x, weight_1), baias_1)
-        layer_1 = tf.nn.relu(layer_1)
+        layer_out = tf.nn.relu(layer_1)
 
-    # Hidden layer with RELU activation
-    with tf.name_scope('fully_connected_2'):
-        weight_2 = tf.Variable(tf.random_normal([n_hidden_1, n_hidden_2], stddev=0.01), name='weight')
-        baias_2 = tf.Variable(tf.random_normal([n_hidden_2], stddev=0.01), name='baias')
-        layer_2 = tf.add(tf.matmul(layer_1, weight_2), baias_2)
-        layer_2 = tf.nn.relu(layer_2)
+    if hidden_layers >= 2:
+        # Hidden layer with RELU activation
+        with tf.name_scope('fully_connected_2'):
+            weight_2 = tf.Variable(tf.random_normal([n_hidden, n_hidden], stddev=0.01), name='weight')
+            baias_2 = tf.Variable(tf.random_normal([n_hidden], stddev=0.01), name='baias')
+            layer_2 = tf.add(tf.matmul(layer_out, weight_2), baias_2)
+            layer_out = tf.nn.relu(layer_2)
 
-    # Hidden layer with RELU activation
-    with tf.name_scope('fully_connected_3'):
-        weight_3 = tf.Variable(tf.random_normal([n_hidden_2, n_hidden_3], stddev=0.01), name='weight')
-        baias_3 = tf.Variable(tf.random_normal([n_hidden_3], stddev=0.01), name='baias')
-        layer_3 = tf.add(tf.matmul(layer_2, weight_3), baias_3)
-        layer_3 = tf.nn.relu(layer_3)
+    if hidden_layers >= 3:
+        # Hidden layer with RELU activation
+        with tf.name_scope('fully_connected_3'):
+            weight_3 = tf.Variable(tf.random_normal([n_hidden, n_hidden], stddev=0.01), name='weight')
+            baias_3 = tf.Variable(tf.random_normal([n_hidden], stddev=0.01), name='baias')
+            layer_3 = tf.add(tf.matmul(layer_out, weight_3), baias_3)
+            layer_out = tf.nn.relu(layer_3)
 
     # Output layer with linear activation
     with tf.name_scope('output'):
-        weight_out = tf.Variable(tf.random_normal([n_hidden_3, n_classes], stddev=0.01), name='weight')
+        weight_out = tf.Variable(tf.random_normal([n_hidden, n_classes], stddev=0.01), name='weight')
         baias_out = tf.Variable(tf.random_normal([n_classes], stddev=0.01), name='baias')
-        out_layer = tf.matmul(layer_3, weight_out) + baias_out
+        out_layer = tf.matmul(layer_out, weight_out) + baias_out
 
     pred = out_layer
 

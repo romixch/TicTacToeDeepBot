@@ -9,7 +9,8 @@ import KIPlayer
 
 # Parameters
 learning_rate = 1e-4
-games_to_play = 500
+hidden_layers = 2
+games_to_play = 200000
 reward_discount = 0.6
 punishment_discount = 0.6
 reward = 1.0
@@ -18,7 +19,7 @@ punishment = -1.0
 
 def new_tensor_file_writer():
     index = 1
-    tensor_board_log_dir = './tensorboard_log/3fullyLayers'\
+    tensor_board_log_dir = './tensorboard_log/' + repr(hidden_layers) + 'fullyLayers'\
                            + '_LR' + repr(learning_rate) \
                            + '_rewardDiscount' + repr(reward_discount) \
                            + '/'
@@ -45,7 +46,7 @@ def calculate_discounted_rewards(states, actions, reward_number):
     return rewards
 
 
-x, y, pred, x_wins, o_wins, draw = model_helper.build_model(b.board_field_size)
+x, y, pred, x_wins, o_wins, draw = model_helper.build_model(b.board_field_size, hidden_layers)
 
 # Define loss and optimizer
 cost = tf.reduce_mean(tf.squared_difference(pred, y))

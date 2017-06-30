@@ -15,7 +15,7 @@ with tf.Session() as sess:
             game.setField(x, y, game.playerX)
             print(game.get_pretty_board)
 
-            if (game.isFinished()):
+            if game.isFinished():
                 if game.isWinnerX():
                     print('You have lost!')
                 else:
