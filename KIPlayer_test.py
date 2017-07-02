@@ -14,7 +14,7 @@ class test_next_move_as_X(unittest.TestCase):
                 predictions = numpy.array([[0.9, 0.2, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]])
                 return predictions
         sess = fake_session()
-        x, y = next_move(game, player, sess, '', '')
+        x, y = next_move(game, sess, '', '')
         self.assertEqual(x, 0)
         self.assertEqual(y, 0)
 
@@ -27,7 +27,7 @@ class test_next_move_as_X(unittest.TestCase):
                 predictions = numpy.array([[0.7, 0.1, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5, 0.5]])
                 return predictions
         sess = fake_session()
-        x, y = next_move(game, player, sess, '', '')
+        x, y = next_move(game, sess, '', '')
         self.assertEqual(x, 1)
         self.assertEqual(y, 0)
 
@@ -44,7 +44,7 @@ class test_next_move_as_O(unittest.TestCase):
                 return predictions
 
         sess = fake_session()
-        x, y = next_move(game, player, sess, '', '')
+        x, y = next_move(game, sess, '', '')
         self.assertEqual(x, 0)
         self.assertEqual(y, 0)
 
@@ -59,6 +59,6 @@ class test_next_move_as_O(unittest.TestCase):
                 return predictions
 
         sess = fake_session()
-        x, y = next_move(game, player, sess, '', '')
+        x, y = next_move(game, sess, '', '')
         self.assertEqual(x, 1)
         self.assertEqual(y, 0)
