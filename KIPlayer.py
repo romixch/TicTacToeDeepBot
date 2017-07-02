@@ -1,5 +1,6 @@
 import numpy
 
+
 def next_move(game, sess, pred, x):
     board = game.board_for_learning()
     predictions = sess.run(pred, feed_dict={x: [board]})[0]

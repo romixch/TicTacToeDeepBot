@@ -8,6 +8,7 @@ class TicTacToe:
         self._O = 2.0
         self._w, self._h = 3, 3
         self._board = [[self._empty for y in range(self._h)] for x in range(self._w)]
+        self._counter = 0
 
     @property
     def board_field_size(self):
@@ -41,7 +42,6 @@ class TicTacToe:
                 board[y * self._h + x] = mark
         return board
 
-
     def playX(self, x, y):
         self.setField(x, y, self._X)
 
@@ -55,6 +55,7 @@ class TicTacToe:
         value = self._board[y][x]
         if value == 0:
             self._board[y][x] = player
+            self._counter += 1
 
     def isWinner(self, player):
         horizontally = [player for x in range(self._w)]
@@ -108,3 +109,8 @@ class TicTacToe:
             b = b.replace(str(self._empty), ' ')
             b += '|'
         return b
+
+
+    @property
+    def next_turn(self):
+        return self._X if self._counter % 2 == 0 else self._O
