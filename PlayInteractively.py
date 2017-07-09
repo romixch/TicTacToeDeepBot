@@ -14,7 +14,7 @@ with tf.Session() as sessX:
     with tf.Session() as sessO:
         model_helper.load_model(sessO, 'tf-model/O')
         while continue_playing:
-            game = ttt.TicTacToe()
+            game = ttt.TicTacToe(4, 4, 3)
             # choose starter
             if random.choice([True, False]):
                 fun_to_play_X = KIPlayer.next_move

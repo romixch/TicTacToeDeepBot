@@ -1,10 +1,10 @@
 import tensorflow as tf
 
-def build_model(board_field_size, hidden_layers):
+def build_model(board_field_size, hidden_layers, hidden_layer_size_factor):
 
     # Network Architecture Parameters
     n_input = board_field_size  # Input features. Count of board tales
-    n_hidden = board_field_size * 10  # hidden layer number of features
+    n_hidden = board_field_size * hidden_layer_size_factor  # hidden layer number of features
     n_classes = board_field_size  # The number of possible moves
 
     # tf Graph input

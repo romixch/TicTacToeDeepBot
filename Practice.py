@@ -8,9 +8,12 @@ import numpy
 import KIPlayer
 
 # Parameters
+board_size = 4
+runlength = 3
 learning_rate = 1e-4
 hidden_layers = 2
-games_to_play = 1000000
+hidden_layer_size_factor = 3
+games_to_play = 500000
 reward_discount = 0.7
 punishment_discount = 0.7
 reward = 1.0
@@ -22,6 +25,9 @@ def new_tensor_file_writer():
     tensor_board_log_dir = './tensorboard_log/' + repr(hidden_layers) + 'fullyLayers'\
                            + '_LR' + repr(learning_rate) \
                            + '_rewardDiscount' + repr(reward_discount) \
+                           + '_boardSize' + repr(board_size) \
+                           + '_runlength' + repr(runlength) \
+                           + '_hidden_layer_size_factor' + repr(hidden_layer_size_factor) \
                            + '/'
     while os.path.isdir(tensor_board_log_dir + repr(index)):
         index += 1
@@ -32,7 +38,7 @@ def reshape(numpy_row_vector, num_columns):
     num_rows = int(len(numpy_row_vector) / num_columns)
     return numpy.reshape(numpy_row_vector, (num_rows, num_columns))
 
-b = ttt.TicTacToe()
+b = ttt.TicTacToe(board_size, board_size, runlength)
 
 def calculate_discounted_rewards(states, actions, reward_number):
     rewards = numpy.empty((0, 0))
@@ -46,7 +52,7 @@ def calculate_discounted_rewards(states, actions, reward_number):
     return rewards
 
 
-x, y, pred, x_wins, o_wins, draw = model_helper.build_model(b.board_field_size, hidden_layers)
+x, y, pred, x_wins, o_wins, draw = model_helper.build_model(b.board_field_size, hidden_layers, hidden_layer_size_factor)
 
 # Define loss and optimizer
 cost = tf.reduce_mean(tf.squared_difference(pred, y))
@@ -71,7 +77,7 @@ with tf.Session() as sessX:
 
         for game_index in range(games_to_play):
             # Play a full game
-            game = ttt.TicTacToe()
+            game = ttt.TicTacToe(board_size, board_size, runlength)
             players = [game.playerX, game.playerO]
             playerId = 0
             states = {
