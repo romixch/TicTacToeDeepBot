@@ -2,11 +2,13 @@ import numpy
 
 
 class TicTacToe:
-    def __init__(self):
+
+    def __init__(self, width = 3, height = 3, runlength = 3):
         self._empty = 0.0
         self._X = 1.0
         self._O = 2.0
-        self._w, self._h = 3, 3
+        self._w, self._h = width, height
+        self._runlength = runlength
         self._board = [[self._empty for y in range(self._h)] for x in range(self._w)]
         self._counter = 0
 
@@ -58,12 +60,11 @@ class TicTacToe:
             self._counter += 1
 
     def isWinner(self, player):
-        horizontally = [player for x in range(self._w)]
-        vertically = [player for y in range(self._h)]
+        winning_line = [player for x in range(self._runlength)]
 
         for x in range(self._w):
             row = self._board[x]
-            if row == horizontally:
+            if _seq_in_seq(winning_line, row):
                 return player
 
         # Rearrange board to get a column in an array
@@ -71,11 +72,29 @@ class TicTacToe:
         for x in range(self._w):
             for y in range(self._h):
                 row[y] = self._board[y][x]
-            if row == vertically:
+            if _seq_in_seq(winning_line, row):
                 return player
+
+        # Diagonal top left
+        for start_x in _inclusive_range(self._w - self._runlength):
+            for start_y in _inclusive_range(self._w - self._runlength):
+                row = [self._empty for y in range(self._w)]
+                for r in range(self._runlength):
+                    row[r] = self._board[start_y + r][start_x + r]
+                if _seq_in_seq(winning_line, row):
+                    return player
 
         if self._board[0][0] == player and self._board[1][1] == player and self._board[2][2] == player:
             return player
+
+        # Diagonal top right
+        for start_x in _inclusive_range(self._w - (self._w - self._runlength) - 1):
+            for start_y in _inclusive_range(self._w - self._runlength):
+                row = [self._empty for y in range(self._w)]
+                for r in range(self._runlength):
+                    row[r] = self._board[start_y + r][start_x - r]
+                if _seq_in_seq(winning_line, row):
+                    return player
 
         if self._board[0][2] == player and self._board[1][1] == player and self._board[2][0] == player:
             return player
@@ -114,3 +133,16 @@ class TicTacToe:
     @property
     def next_turn(self):
         return self._X if self._counter % 2 == 0 else self._O
+
+def _seq_in_seq(subseq, seq):
+    while subseq[0] in seq:
+        index = seq.index(subseq[0])
+        if subseq == seq[index:index + len(subseq)]:
+            return True
+        else:
+            seq = seq[index + 1:]
+    else:
+        return False
+
+def _inclusive_range(end):
+    return range(0, end + 1)

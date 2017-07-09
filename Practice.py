@@ -10,9 +10,9 @@ import KIPlayer
 # Parameters
 learning_rate = 1e-4
 hidden_layers = 2
-games_to_play = 200000
-reward_discount = 0.6
-punishment_discount = 0.6
+games_to_play = 1000000
+reward_discount = 0.7
+punishment_discount = 0.7
 reward = 1.0
 punishment = -1.0
 
