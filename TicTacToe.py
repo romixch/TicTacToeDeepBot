@@ -78,7 +78,7 @@ class TicTacToe:
         # Diagonal top left
         for start_x in _inclusive_range(self._w - self._runlength):
             for start_y in _inclusive_range(self._w - self._runlength):
-                row = [self._empty for y in range(self._w)]
+                row = [self._empty for y in range(self._runlength)]
                 for r in range(self._runlength):
                     row[r] = self._board[start_y + r][start_x + r]
                 if _seq_in_seq(winning_line, row):
@@ -90,9 +90,9 @@ class TicTacToe:
         # Diagonal top right
         for start_x in _inclusive_range(self._w - (self._w - self._runlength) - 1):
             for start_y in _inclusive_range(self._w - self._runlength):
-                row = [self._empty for y in range(self._w)]
+                row = [self._empty for y in range(self._runlength)]
                 for r in range(self._runlength):
-                    row[r] = self._board[start_y + r][start_x - r]
+                    row[r] = self._board[start_y + r][self._w - start_x - r - 1]
                 if _seq_in_seq(winning_line, row):
                     return player
 

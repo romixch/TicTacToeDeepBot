@@ -120,3 +120,14 @@ class TicTacToeTests(unittest.TestCase):
         self.assertFalse(game.isFinished())
         game.playX(2, 2)
         self.assertTrue(game.isFinished())
+
+
+    def test_4_by_4_bug(self):
+        game = TicTacToe(4, 4, 3)
+        game.playX(3, 2)
+        game.playO(1, 2)
+        game.playX(0, 1)
+        game.playO(2, 0)
+        game.playX(2, 3)
+        print(game.get_pretty_board)
+        self.assertFalse(game.isFinished())
