@@ -10,10 +10,11 @@ import KIPlayer
 # Parameters
 board_size = 4
 runlength = 3
+exploration = 0.4
 learning_rate = 1e-4
 hidden_layers = 2
 hidden_layer_size_factor = 3
-games_to_play = 500000
+games_to_play = 200000
 reward_discount = 0.7
 punishment_discount = 0.7
 reward = 1.0
@@ -96,9 +97,9 @@ with tf.Session() as sessX:
 
                 # Calculate next move
                 if player == game.playerX:
-                    idx_x, idx_y = KIPlayer.next_move(game, sessX, pred, x)
+                    idx_x, idx_y = KIPlayer.next_move(game, sessX, pred, x, exploration)
                 else:
-                    idx_x, idx_y = KIPlayer.next_move(game, sessO, pred, x)
+                    idx_x, idx_y = KIPlayer.next_move(game, sessO, pred, x, exploration)
 
                 # set next move
                 game.setField(idx_x, idx_y, player)
