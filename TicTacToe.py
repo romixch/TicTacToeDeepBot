@@ -88,11 +88,13 @@ class TicTacToe:
             return player
 
         # Diagonal top right
-        for start_x in _inclusive_range(self._w - (self._w - self._runlength) - 1):
-            for start_y in _inclusive_range(self._w - self._runlength):
+        for start_x in _inclusive_range(self._w - self._runlength):
+            for start_y in _inclusive_range(self._h - self._runlength):
                 row = [self._empty for y in range(self._runlength)]
                 for r in range(self._runlength):
-                    row[r] = self._board[start_y + r][self._w - start_x - r - 1]
+                    idy = start_y + r
+                    idx = self._w - start_x - r - 1
+                    row[r] = self._board[idy][idx]
                 if _seq_in_seq(winning_line, row):
                     return player
 
