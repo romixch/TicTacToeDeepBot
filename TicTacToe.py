@@ -84,9 +84,6 @@ class TicTacToe:
                 if _seq_in_seq(winning_line, row):
                     return player
 
-        if self._board[0][0] == player and self._board[1][1] == player and self._board[2][2] == player:
-            return player
-
         # Diagonal top right
         for start_x in _inclusive_range(self._w - self._runlength):
             for start_y in _inclusive_range(self._h - self._runlength):
@@ -97,9 +94,6 @@ class TicTacToe:
                     row[r] = self._board[idy][idx]
                 if _seq_in_seq(winning_line, row):
                     return player
-
-        if self._board[0][2] == player and self._board[1][1] == player and self._board[2][0] == player:
-            return player
 
     def isWinnerX(self):
         return self.isWinner(self._X)

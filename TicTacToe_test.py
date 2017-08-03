@@ -132,7 +132,7 @@ class TicTacToeTests(unittest.TestCase):
         print(game.get_pretty_board)
         self.assertFalse(game.isFinished())
 
-    def test_4_b_4_bug_2(self):
+    def test_4_by_4_bug_2(self):
         game = TicTacToe(4, 4, 3)
         game.playX(0, 0)
         game.playO(1, 0)
@@ -140,5 +140,15 @@ class TicTacToeTests(unittest.TestCase):
         game.playO(0, 1)
         game.playX(3, 3)
         game.playO(3, 2)
+        print(game.get_pretty_board)
+        self.assertFalse(game.isFinished())
+
+    def test_5_by_5_bug(self):
+        game = TicTacToe(5, 5, 4)
+        game.playX(0, 0)
+        game.playO(2, 1)
+        game.playX(1, 1)
+        game.playO(2, 3)
+        game.playX(2, 2)
         print(game.get_pretty_board)
         self.assertFalse(game.isFinished())
