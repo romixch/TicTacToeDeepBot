@@ -1,6 +1,7 @@
 import unittest
 import numpy
 from KIPlayer import next_move
+from KIPlayer import visualize
 from TicTacToe import TicTacToe
 
 class test_next_move(unittest.TestCase):
@@ -45,3 +46,16 @@ class test_next_move(unittest.TestCase):
                 correct_count += 1
 
         self.assertTrue(correct_count > 5, 'There was some randomness and in less than 6 out of 10 times it the result was random...')
+
+
+    def test_visualize(self):
+        game = TicTacToe()
+        class fake_session:
+            def run(self, pred, feed_dict):
+                predictions = numpy.array([[0.25, 0.401, 0.453, 0.512, 0.645, 0.345, 0.879, 0.21, -0.134]])
+                return predictions
+        sess = fake_session()
+        game.setField(0, 0, game.playerX)
+        game.setField(1, 1, game.playerO)
+        image = visualize(game, sess, '', '')
+        image.show()
