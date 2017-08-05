@@ -57,5 +57,7 @@ class test_next_move(unittest.TestCase):
         sess = fake_session()
         game.setField(0, 0, game.playerX)
         game.setField(1, 1, game.playerO)
+        game.setField(2, 0, game.playerX)
+        game.setField(2, 2, game.playerO)
         image = visualize(game, sess, '', '')
         image.show()
