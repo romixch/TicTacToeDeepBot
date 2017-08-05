@@ -60,11 +60,9 @@ class TicTacToe:
             self._counter += 1
 
     def isWinner(self, player):
-        winning_line = [player for x in range(self._runlength)]
-
         for x in range(self._w):
             row = self._board[x]
-            if _seq_in_seq(winning_line, row):
+            if self._contains_winning_line(player, row):
                 return player
 
         # Rearrange board to get a column in an array
@@ -72,7 +70,7 @@ class TicTacToe:
         for x in range(self._w):
             for y in range(self._h):
                 row[y] = self._board[y][x]
-            if _seq_in_seq(winning_line, row):
+            if self._contains_winning_line(player, row):
                 return player
 
         # Diagonal top left
@@ -81,7 +79,7 @@ class TicTacToe:
                 row = [self._empty for y in range(self._runlength)]
                 for r in range(self._runlength):
                     row[r] = self._board[start_y + r][start_x + r]
-                if _seq_in_seq(winning_line, row):
+                if self._contains_winning_line(player, row):
                     return player
 
         # Diagonal top right
@@ -92,7 +90,7 @@ class TicTacToe:
                     idy = start_y + r
                     idx = self._w - start_x - r - 1
                     row[r] = self._board[idy][idx]
-                if _seq_in_seq(winning_line, row):
+                if self._contains_winning_line(player, row):
                     return player
 
     def isWinnerX(self):
@@ -114,9 +112,9 @@ class TicTacToe:
 
     @property
     def get_pretty_board(self):
-        b = ''.join('-' for x in range(self._w))
+        b = ' ' + ''.join('-' for x in range(self._w))
         for y in range(self._w):
-            b += '\n'
+            b += '\n|'
             for x in range(self._w):
                 b += str(self._board[y][x])
             b = b.replace(str(self._X), 'X')
@@ -129,6 +127,16 @@ class TicTacToe:
     @property
     def next_turn(self):
         return self._X if self._counter % 2 == 0 else self._O
+
+    def _contains_winning_line(self, player, row):
+        strike = 0
+        for i in range(len(row)):
+            if row[i] == player:
+                strike += 1
+                if strike >= self._runlength: return True
+            else:
+                strike = 0
+        return False
 
 def _seq_in_seq(subseq, seq):
     while subseq[0] in seq:

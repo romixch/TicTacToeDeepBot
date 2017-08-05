@@ -8,13 +8,13 @@ import numpy
 import KIPlayer
 
 # Parameters
-board_size = 4
-runlength = 3
-exploration = 0.4
+board_size = 5
+runlength = 4
+exploration = 0.3
 learning_rate = 1e-4
 hidden_layers = 2
 hidden_layer_size_factor = 3
-games_to_play = 200000
+games_to_play = 10000
 reward_discount = 0.7
 punishment_discount = 0.7
 reward = 1.0
@@ -40,6 +40,7 @@ def reshape(numpy_row_vector, num_columns):
     return numpy.reshape(numpy_row_vector, (num_rows, num_columns))
 
 b = ttt.TicTacToe(board_size, board_size, runlength)
+
 
 def calculate_discounted_rewards(states, actions, reward_number):
     rewards = numpy.empty((0, 0))

@@ -61,7 +61,7 @@ target/
 
 virtenv/
 tensorboard_log
-tf-model/O
-tf-model/X
+tf-model*
 *_train\.p
 *_test\.p
+*.prof
