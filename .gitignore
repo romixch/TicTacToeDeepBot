@@ -65,3 +65,4 @@ tf-model*
 *_train\.p
 *_test\.p
 *.prof
+*.dat
