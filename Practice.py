@@ -7,29 +7,17 @@ import model_helper
 import numpy
 import KIPlayer
 import pickle
-
-# Parameters
-board_size = 5
-runlength = 4
-exploration = 0.3
-learning_rate = 1e-4
-hidden_layers = 2
-hidden_layer_size_factor = 2
-games_to_play = 2000
-reward_discount = 0.7
-punishment_discount = 0.7
-reward = 1.0
-punishment = -1.0
+import config
 
 
 def new_tensor_file_writer():
     index = 1
-    tensor_board_log_dir = './tensorboard_log/' + repr(hidden_layers) + 'fullyLayers'\
-                           + '_LR' + repr(learning_rate) \
-                           + '_rewardDiscount' + repr(reward_discount) \
-                           + '_boardSize' + repr(board_size) \
-                           + '_runlength' + repr(runlength) \
-                           + '_hidden_layer_size_factor' + repr(hidden_layer_size_factor) \
+    tensor_board_log_dir = './tensorboard_log/' + repr(config.hidden_layers) + 'fullyLayers'\
+                           + '_LR' + repr(config.learning_rate) \
+                           + '_rewardDiscount' + repr(config.reward_discount) \
+                           + '_boardSize' + repr(config.board_size) \
+                           + '_config.runlength' + repr(config.runlength) \
+                           + '_hidden_layer_size_factor' + repr(config.hidden_layer_size_factor) \
                            + '/'
     while os.path.isdir(tensor_board_log_dir + repr(index)):
         index += 1
@@ -40,14 +28,14 @@ def reshape(numpy_row_vector, num_columns):
     num_rows = int(len(numpy_row_vector) / num_columns)
     return numpy.reshape(numpy_row_vector, (num_rows, num_columns))
 
-b = ttt.TicTacToe(board_size, board_size, runlength)
+b = ttt.TicTacToe(config.board_size, config.board_size, config.runlength)
 
 
 def calculate_discounted_rewards(states, actions, reward_number):
     rewards = numpy.empty((0, 0))
     for state_index in range(len(states)):
         distance_to_reward = len(states) - state_index - 1
-        discounted_reward = reward_number * reward_discount ** distance_to_reward
+        discounted_reward = reward_number * config.reward_discount ** distance_to_reward
         labels = numpy.full(b.board_field_size, 0.0)
         labels[int(actions[state_index])] = discounted_reward
         rewards = numpy.append(rewards, labels)
@@ -55,11 +43,11 @@ def calculate_discounted_rewards(states, actions, reward_number):
     return rewards
 
 
-x, y, pred, x_wins, o_wins, draw = model_helper.build_model(b.board_field_size, hidden_layers, hidden_layer_size_factor)
+x, y, pred, x_wins, o_wins, draw = model_helper.build_model(b.board_field_size, config.hidden_layers, config.hidden_layer_size_factor)
 
 # Define loss and optimizer
 cost = tf.reduce_mean(tf.squared_difference(pred, y))
-optimizer = tf.train.AdamOptimizer(learning_rate=learning_rate).minimize(cost)
+optimizer = tf.train.AdamOptimizer(learning_rate=config.learning_rate).minimize(cost)
 
 # Initializing the variables
 init = tf.global_variables_initializer()
@@ -80,9 +68,9 @@ with tf.Session() as sessX:
                 tf.summary.scalar('draw', draw)
                 summary_op = tf.summary.merge_all()
 
-                for game_index in range(games_to_play):
+                for game_index in range(config.games_to_play):
                     # Play a full game
-                    game = ttt.TicTacToe(board_size, board_size, runlength)
+                    game = ttt.TicTacToe(config.board_size, config.board_size, config.runlength)
                     players = [game.playerX, game.playerO]
                     playerId = 0
                     states = {
@@ -101,9 +89,9 @@ with tf.Session() as sessX:
 
                         # Calculate next move
                         if player == game.playerX:
-                            idx_x, idx_y = KIPlayer.next_move(game, sessX, pred, x, exploration)
+                            idx_x, idx_y = KIPlayer.next_move(game, sessX, pred, x, config.exploration)
                         else:
-                            idx_x, idx_y = KIPlayer.next_move(game, sessO, pred, x, exploration)
+                            idx_x, idx_y = KIPlayer.next_move(game, sessO, pred, x, config.exploration)
 
                         # set next move
                         game.setField(idx_x, idx_y, player)
@@ -127,10 +115,10 @@ with tf.Session() as sessX:
                     is_winner_x = game.isWinnerX()
                     is_winner_o = game.isWinnerO()
                     winner = game.playerX if is_winner_x else game.playerO
-                    rewards_winner = calculate_discounted_rewards(states[winner], actions[winner], reward)
+                    rewards_winner = calculate_discounted_rewards(states[winner], actions[winner], config.reward)
 
                     looser = game.playerO if is_winner_x else game.playerX
-                    punishments_looser = calculate_discounted_rewards(states[looser], actions[looser], punishment)
+                    punishments_looser = calculate_discounted_rewards(states[looser], actions[looser], config.punishment)
 
                     # Learn from past game as winner
                     x_wins_float = 1.0 if is_winner_x else 0.0
@@ -153,8 +141,8 @@ with tf.Session() as sessX:
                     pickle.dump(rewards_winner, learn_x_file) if is_winner_x else pickle.dump(punishments_looser, learn_o_file)
                     pickle.dump(punishments_looser, learn_o_file) if is_winner_x else pickle.dump(punishments_looser, learn_x_file)
 
-                    if game_index % int(games_to_play / 100) == 0:
-                        print('finished', int(game_index / games_to_play * 100), '%')
+                    if game_index % int(config.games_to_play / 100) == 0:
+                        print('finished', int(game_index / config.games_to_play * 100), '%')
 
             model_helper.save_model(sessO, 'tf-model/O', x, pred)
     model_helper.save_model(sessX, 'tf-model/X', x, pred)

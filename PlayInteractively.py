@@ -4,6 +4,7 @@ import TicTacToe as ttt
 import model_helper
 import tensorflow as tf
 import random
+import config
 
 
 continue_playing = True
@@ -14,7 +15,7 @@ with tf.Session() as sessX:
     with tf.Session() as sessO:
         model_helper.load_model(sessO, 'tf-model/O')
         while continue_playing:
-            game = ttt.TicTacToe(5, 5, 4)
+            game = ttt.TicTacToe(config.board_size, config.board_size, config.runlength)
             # choose starter
             if random.choice([True, False]):
                 fun_to_play_X = KIPlayer.next_move
