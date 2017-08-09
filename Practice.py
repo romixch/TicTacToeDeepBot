@@ -28,6 +28,7 @@ def reshape(numpy_row_vector, num_columns):
     num_rows = int(len(numpy_row_vector) / num_columns)
     return numpy.reshape(numpy_row_vector, (num_rows, num_columns))
 
+
 b = ttt.TicTacToe(config.board_size, config.board_size, config.runlength)
 
 
@@ -137,12 +138,16 @@ with tf.Session() as sessX:
                     writer.add_summary(summary, game_index)
 
                     pickle.dump(states[game.playerX], learn_x_file)
+                    pickle.dump(actions[game.playerX], learn_x_file)
                     pickle.dump(states[game.playerO], learn_o_file)
+                    pickle.dump(actions[game.playerO], learn_o_file)
                     pickle.dump(rewards_winner, learn_x_file) if is_winner_x else pickle.dump(punishments_looser, learn_o_file)
                     pickle.dump(punishments_looser, learn_o_file) if is_winner_x else pickle.dump(punishments_looser, learn_x_file)
 
                     if game_index % int(config.games_to_play / 100) == 0:
                         print('finished', int(game_index / config.games_to_play * 100), '%')
 
+                learn_o_file.close()
             model_helper.save_model(sessO, 'tf-model/O', x, pred)
+            learn_x_file.close()
     model_helper.save_model(sessX, 'tf-model/X', x, pred)
