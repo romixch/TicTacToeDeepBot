@@ -3,6 +3,7 @@ board_size = 5
 runlength = 4
 exploration = 0.3
 learning_rate = 1e-4
+learning_epochs = 300
 hidden_layers = 2
 hidden_layer_size_factor = 2
 games_to_play = 200000
