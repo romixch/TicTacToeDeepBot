@@ -115,34 +115,46 @@ with tf.Session() as sessX:
                     # Calculate discounted rewards for learning
                     is_winner_x = game.isWinnerX()
                     is_winner_o = game.isWinnerO()
-                    winner = game.playerX if is_winner_x else game.playerO
+
+                    draw_float = 0.0
+                    if is_winner_x:
+                        winner = game.playerX
+                        looser = game.playerO
+                        x_wins_float = 1.0
+                        o_wins_float = 0.0
+                        sess_winner = sessX
+                        sess_looser = sessO
+                        learn_winner_file = learn_x_file
+                        learn_looser_file = learn_o_file
+                    else:
+                        winner = game.playerO
+                        looser = game.playerX
+                        x_wins_float = 0.0
+                        o_wins_float = 1.0
+                        sess_winner = sessO
+                        sess_looser = sessX
+                        learn_winner_file = learn_o_file
+                        learn_looser_file = learn_x_file
+
+                    if not is_winner_x and not is_winner_o:
+                        draw_float = 1.0
+
                     rewards_winner = calculate_discounted_rewards(states[winner], actions[winner], config.reward)
 
-                    looser = game.playerO if is_winner_x else game.playerX
                     punishments_looser = calculate_discounted_rewards(states[looser], actions[looser], config.punishment)
 
                     # Learn from past game as winner
-                    x_wins_float = 1.0 if is_winner_x else 0.0
-                    o_wins_float = 1.0 if is_winner_o else 0.0
-                    draw_float = 1.0 if not is_winner_x and not is_winner_o else 0.0
-                    sess_winner = sessX if is_winner_x else sessO
                     _, summary = sess_winner.run([optimizer, summary_op], feed_dict={x: states[winner], y: rewards_winner, x_wins: x_wins_float, o_wins: o_wins_float, draw: draw_float})
                     writer.add_summary(summary, game_index)
 
                     # Learn from past game as looser
-                    x_wins_array = 1.0 if is_winner_x else 0.0
-                    o_wins_float = 1.0 if is_winner_o else 0.0
-                    draw_float = 1.0 if not is_winner_x and not is_winner_o else 0.0
-                    sess_looser = sessO if is_winner_x else sessX
                     _, summary = sess_looser.run([optimizer, summary_op], feed_dict={x: states[looser], y: punishments_looser, x_wins: x_wins_float, o_wins: o_wins_float, draw: draw_float})
                     writer.add_summary(summary, game_index)
 
                     pickle.dump(states[game.playerX], learn_x_file)
-                    pickle.dump(actions[game.playerX], learn_x_file)
                     pickle.dump(states[game.playerO], learn_o_file)
-                    pickle.dump(actions[game.playerO], learn_o_file)
-                    pickle.dump(rewards_winner, learn_x_file) if is_winner_x else pickle.dump(punishments_looser, learn_o_file)
-                    pickle.dump(punishments_looser, learn_o_file) if is_winner_x else pickle.dump(punishments_looser, learn_x_file)
+                    pickle.dump(rewards_winner, learn_winner_file)
+                    pickle.dump(punishments_looser, learn_looser_file)
 
                     if game_index % int(config.games_to_play / 100) == 0:
                         print('finished', int(game_index / config.games_to_play * 100), '%')
