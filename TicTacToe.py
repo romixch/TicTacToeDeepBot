@@ -37,12 +37,25 @@ class TicTacToe:
         return self._empty
 
     def board_for_learning(self):
+        return self.board_for_learning_as_X()
+
+
+    def board_for_learning_as_X(self):
         board = numpy.full((self._h * self._w), 0.0)
         for y in range(self._w):
             for x in range(self._h):
                 mark = self._board[y][x]
                 board[y * self._h + x] = mark
         return board
+
+
+    def board_for_learning_as_O(self):
+        board = self.board_for_learning_as_X()
+        board[board == self._X] = 5.0
+        board[board == self._O] = self._X
+        board[board == 5.0] = self._O
+        return board
+
 
     def playX(self, x, y):
         self.setField(x, y, self._X)
