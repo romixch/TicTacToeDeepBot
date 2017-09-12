@@ -1,5 +1,6 @@
 import unittest
 import numpy
+import copy
 from TicTacToe import TicTacToe
 
 class TicTacToeTests(unittest.TestCase):
@@ -152,3 +153,16 @@ class TicTacToeTests(unittest.TestCase):
         game.playX(2, 2)
         print(game.get_pretty_board)
         self.assertFalse(game.isFinished())
+
+    def test_copying(self):
+        gameA = TicTacToe(5, 5, 4)
+        gameA.playX(0, 0)
+        gameA.playO(2, 1)
+        gameA.playX(1, 1)
+        gameA.playO(2, 3)
+        gameA.playX(2, 2)
+
+        gameB = copy.deepcopy(gameA)
+        self.assertEqual(gameA.get_pretty_board, gameB.get_pretty_board)
+        gameB.playO(3, 3)
+        self.assertNotEqual(gameA.get_pretty_board, gameB.get_pretty_board)
